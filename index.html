@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ДомБанк — Мотивация для детей</title>
+  <style>
+    /* ========== CSS VARIABLES (Light Theme by default) ========== */
+    :root {
+      --bg: #F3F3F5;
+      --bg-secondary: #E8E8EB;
+      --surface: #FFFFFF;
+      --surface-hover: #F9F9FB;
+      --text-primary: #1C1C1E;
+      --text-secondary: #8B8B90;
+      --text-tertiary: #B0B0B5;
+      --border: rgba(0, 0, 0, 0.06);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+      --accent: #EF3124;
+      --accent-hover: #D42015;
+      --accent-light: rgba(239, 49, 36, 0.1);
+      --green: #2BA84A;
+      --green-bg: #EAF9EC;
+      --balance-bg: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+      --balance-text: #FFFFFF;
+      --balance-secondary: #AEAEB2;
+      --toast-bg: #1C1C1E;
+      --toast-text: #FFFFFF;
+      --overlay: rgba(0, 0, 0, 0.5);
+      --input-bg: #F3F3F5;
+      --input-focus-bg: #FFFFFF;
+      --chip-bg: #F3F3F5;
+      --chip-text: #636366;
+      --sheet-handle: #E2E2E5;
+      --toggle-bg: #FFFFFF;
+      --blur-bg: rgba(243, 243, 245, 0.85);
+    }
+
+    /* Dark theme */
+    .dark {
+      --bg: #1C1C1E;
+      --bg-secondary: #2C2C2E;
+      --surface: #2C2C2E;
+      --surface-hover: #38383A;
+      --text-primary: #FFFFFF;
+      --text-secondary: #AEAEB2;
+      --text-tertiary: #636366;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --accent: #FF453A;
+      --accent-hover: #FF6B60;
+      --accent-light: rgba(255, 69, 58, 0.15);
+      --green: #32D74B;
+      --green-bg: rgba(50, 215, 75, 0.12);
+      --balance-bg: linear-gradient(135deg, #000000 0%, #1C1C1E 100%);
+      --balance-text: #FFFFFF;
+      --balance-secondary: #8E8E93;
+      --toast-bg: #FFFFFF;
+      --toast-text: #1C1C1E;
+      --overlay: rgba(0, 0, 0, 0.7);
+      --input-bg: #38383A;
+      --input-focus-bg: #3A3A3C;
+      --chip-bg: #38383A;
+      --chip-text: #AEAEB2;
+      --sheet-handle: #48484A;
+      --toggle-bg: #38383A;
+      --blur-bg: rgba(28, 28, 30, 0.85);
+    }
+
+    /* Black (OLED) theme */
+    .black {
+      --bg: #000000;
+      --bg-secondary: #0D0D0D;
+      --surface: #111111;
+      --surface-hover: #1A1A1A;
+      --text-primary: #FFFFFF;
+      --text-secondary: #98989D;
+      --text-tertiary: #55555A;
+      --border: rgba(255, 255, 255, 0.06);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+      --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.7);
+      --accent: #FF453A;
+      --accent-hover: #FF6B60;
+      --accent-light: rgba(255, 69, 58, 0.12);
+      --green: #32D74B;
+      --green-bg: rgba(50, 215, 75, 0.1);
+      --balance-bg: linear-gradient(135deg, #111111 0%, #1A1A1A 100%);
+      --balance-text: #FFFFFF;
+      --balance-secondary: #8E8E93;
+      --toast-bg: #FFFFFF;
+      --toast-text: #000000;
+      --overlay: rgba(0, 0, 0, 0.8);
+      --input-bg: #1A1A1A;
+      --input-focus-bg: #222222;
+      --chip-bg: #1A1A1A;
+      --chip-text: #98989D;
+      --sheet-handle: #333333;
+      --toggle-bg: #1A1A1A;
+      --blur-bg: rgba(0, 0, 0, 0.9);
+    }
+
+    /* ========== RESET & BASE ========== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-secondary);
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      transition: background 0.3s ease;
+    }
+
+    .db-root {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .db-shell {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease;
+    }
+
+    /* ========== HEADER ========== */
+    .db-header {
+      padding: 16px 20px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--blur-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: background 0.3s ease;
+    }
+
+    .db-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .db-logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #EF3124 0%, #D42015 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(239, 49, 36, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .db-logo-icon:active {
+      transform: scale(0.9);
+    }
+
+    .db-logo-text {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .db-logo-text span {
+      color: #EF3124;
+    }
+
+    .db-header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .db-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--toggle-bg);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .db-icon-btn:active {
+      transform: scale(0.94);
+      background: var(--surface-hover);
+    }
+
+    .db-icon-btn svg {
+      stroke: var(--text-primary);
+      transition: stroke 0.3s ease;
+    }
+
+    .db-theme-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      transition: all 0.3s ease;
+    }
+
+    .theme-light .db-theme-indicator {
+      background: #FFD60A;
+    }
+
+    .theme-dark .db-theme-indicator {
+      background: #636366;
+    }
+
+    .theme-black .db-theme-indicator {
+      background: #000000;
+      border-color: #333;
+    }
+
+    /* ========== BALANCE CARD ========== */
+    .db-balance {
+      margin: 8px 16px;
+      border-radius: 24px;
+      background: var(--balance-bg);
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+
+    .db-balance::before,
+    .db-balance::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: #EF3124;
+    }
+
+    .db-balance::before {
+      width: 180px;
+      height: 180px;
+      right: -50px;
+      top: -50px;
+      opacity: 0.08;
+    }
+
+    .db-balance::after {
+      width: 100px;
+      height: 100px;
+      right: -10px;
+      bottom: -35px;
+      opacity: 0.06;
+    }
+
+    .db-balance-label {
+      color: var(--balance-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0;
+      position: relative;
+    }
+
+    .db-balance-amount {
+      color: var(--balance-text);
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 2px 0 0;
+      position: relative;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    .db-balance-amount .cur {
+      color: var(--balance-secondary);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .db-balance-today {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      position: relative;
+      background: rgba(92, 210, 106, 0.12);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .db-balance-today span {
+      color: #5CD26A;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .db-balance-today .today-label {
+      color: var(--balance-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    /* ========== ERROR ========== */
+    .db-error {
+      text-align: center;
+      font-size: 11px;
+      color: #B0453B;
+      background: rgba(176, 69, 59, 0.08);
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin: 4px 16px 0;
+      display: none;
+    }
+
+    .db-error.show {
+      display: block;
+    }
+
+    /* ========== SECTION HEADER ========== */
+    .db-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      margin: 24px 0 10px;
+    }
+
+    .db-section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      transition: color 0.3s ease;
+    }
+
+    .db-add-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface);
+      border: none;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .db-add-btn:active {
+      transform: scale(0.95);
+      background: var(--accent-light);
+    }
+
+    /* ========== TASK LIST ========== */
+    .db-list {
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .db-empty {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .db-empty-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .db-task {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+
+    .db-task:active {
+      transform: scale(0.99);
+      box-shadow: var(--shadow-md);
+    }
+
+    .db-check-btn {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 14px;
+      background: #EF3124;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 3px 10px rgba(239, 49, 36, 0.25);
+    }
+
+    .db-check-btn:active {
+      transform: scale(0.88);
+      box-shadow: 0 1px 4px rgba(239, 49, 36, 0.2);
+      background: #D42015;
+    }
+
+    .db-task-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .db-task-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.3s ease;
+    }
+
+    .db-task-reward {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      margin: 3px 0 0;
+      transition: color 0.3s ease;
+    }
+
+    .db-del-btn {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .db-del-btn:active {
+      background: var(--accent-light);
+      color: var(--accent);
+      transform: scale(0.9);
+    }
+
+    /* ========== HISTORY ========== */
+    .db-hist-item {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .db-hist-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 13px;
+      background: var(--green-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .db-hist-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .db-hist-name {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.3s ease;
+    }
+
+    .db-hist-time {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    .db-hist-time span {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      transition: color 0.3s ease;
+    }
+
+    .db-hist-amount {
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: color 0.3s ease;
+    }
+
+    /* ========== PROFILE ========== */
+    .db-profile {
+      padding: 0 16px;
+    }
+
+    .db-profile-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.3s ease;
+    }
+
+    .db-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #EF3124 0%, #FF6B60 100%);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: #FFF;
+      box-shadow: 0 4px 16px rgba(239, 49, 36, 0.3);
+    }
+
+    .db-profile-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 4px;
+      transition: color 0.3s ease;
+    }
+
+    .db-profile-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0 0 16px;
+      transition: color 0.3s ease;
+    }
+
+    .db-stats-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .db-stat-card {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    .db-stat-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0;
+      transition: color 0.3s ease;
+    }
+
+    .db-stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin: 2px 0 0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .db-theme-selector {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 8px;
+      margin-top: 12px;
+      display: flex;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.3s ease;
+    }
+
+    .db-theme-option {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .db-theme-option.active {
+      background: var(--bg);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .db-theme-option:active {
+      transform: scale(0.96);
+    }
+
+    .db-theme-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .db-theme-option.active .db-theme-dot {
+      border-color: var(--accent);
+    }
+
+    .dot-light {
+      background: #F3F3F5;
+      border: 1px solid #D1D1D6;
+    }
+    .dot-dark {
+      background: #2C2C2E;
+      border: 1px solid #48484A;
+    }
+    .dot-black {
+      background: #000000;
+      border: 1px solid #333333;
+    }
+
+    /* ========== BOTTOM SHEET ========== */
+    .db-sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+      transition: background 0.3s ease;
+    }
+
+    .db-sheet-overlay.hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .db-sheet {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      padding: 16px 20px 32px;
+      animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+      transition: background 0.3s ease;
+    }
+
+    .db-sheet-handle {
+      width: 36px;
+      height: 5px;
+      background: var(--sheet-handle);
+      border-radius: 999px;
+      margin: 0 auto 18px;
+      transition: background 0.3s ease;
+    }
+
+    .db-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .db-sheet-head h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      transition: color 0.3s ease;
+    }
+
+    .db-sheet-close {
+      background: var(--bg);
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      padding: 8px;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+
+    .db-sheet-close:active {
+      background: var(--surface-hover);
+    }
+
+    .db-field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0 0 6px;
+      display: block;
+      transition: color 0.3s ease;
+    }
+
+    .db-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 2px solid transparent;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      outline: none;
+      margin-bottom: 16px;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .db-input:focus {
+      border-color: var(--accent);
+      background: var(--input-focus-bg);
+    }
+
+    .db-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .db-submit {
+      width: 100%;
+      background: #EF3124;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(239, 49, 36, 0.3);
+      font-family: inherit;
+    }
+
+    .db-submit:disabled {
+      background: #F5B8B2;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .db-submit:active:not(:disabled) {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px rgba(239, 49, 36, 0.2);
+    }
+
+    /* ========== TOAST ========== */
+    .db-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      z-index: 60;
+      background: var(--toast-bg);
+      color: var(--toast-text);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    .db-toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ========== CONFETTI ========== */
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100%) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .db-confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .db-confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      animation: confettiFall 1.2s ease-out forwards;
+    }
+
+    /* ========== BOTTOM NAV ========== */
+    .db-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      background: var(--blur-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 16px 24px;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .db-nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 12px;
+      color: var(--text-tertiary);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .db-nav-btn.active {
+      color: var(--accent);
+    }
+
+    .db-nav-btn.active::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 24px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 0 0 3px 3px;
+    }
+
+    .db-nav-btn svg {
+      stroke: currentColor;
+      transition: stroke 0.2s ease;
+    }
+
+    .db-nav-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* Spacer for nav */
+    .db-nav-spacer {
+      height: 80px;
+    }
+  </style>
+</head>
+
+<body class="theme-light">
+<div class="db-root">
+  <div class="db-shell">
+    <!-- Header -->
+    <div class="db-header">
+      <div class="db-logo">
+        <div class="db-logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1"/>
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+          </svg>
+        </div>
+        <span class="db-logo-text">Дом<span>Банк</span></span>
+      </div>
+      <div class="db-header-actions">
+        <button class="db-icon-btn" id="themeToggleBtn" aria-label="Сменить тему">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <span class="db-theme-indicator"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Balance -->
+    <div class="db-balance">
+      <p class="db-balance-label">Баланс</p>
+      <p class="db-balance-amount"><span id="balanceValue">0</span> <span class="cur">₸</span></p>
+      <div class="db-balance-today">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5CD26A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+        </svg>
+        <span>+<span id="todayValue">0</span> ₸</span>
+        <span class="today-label">сегодня</span>
+      </div>
+    </div>
+
+    <p class="db-error" id="errorNote">⚠️ Не удалось сохранить данные</p>
+
+    <!-- Main view: Tasks -->
+    <div id="tasksView">
+      <div class="db-section">
+        <h2>Задачи по дому</h2>
+        <button class="db-add-btn" id="openAdd">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Добавить
+        </button>
+      </div>
+      <div class="db-list" id="taskList"></div>
+    </div>
+
+    <!-- History view -->
+    <div id="historyView" class="hidden">
+      <div class="db-section"><h2>Операции</h2></div>
+      <div class="db-list" id="historyList"></div>
+    </div>
+
+    <!-- Profile view -->
+    <div id="profileView" class="hidden">
+      <div class="db-section"><h2>Профиль</h2></div>
+      <div class="db-profile">
+        <div class="db-profile-card">
+          <div class="db-avatar" id="profileInitials">ДБ</div>
+          <p class="db-profile-name">ДомБанк</p>
+          <p class="db-profile-sub">Семейная мотивация</p>
+          <div class="db-stats-row">
+            <div class="db-stat-card">
+              <p class="db-stat-value" id="totalEarned">0 ₸</p>
+              <p class="db-stat-label">Заработано</p>
+            </div>
+            <div class="db-stat-card">
+              <p class="db-stat-value" id="tasksDone">0</p>
+              <p class="db-stat-label">Выполнено</p>
+            </div>
+          </div>
+        </div>
+        <div class="db-theme-selector" id="themeSelector">
+          <button class="db-theme-option active" data-theme="light">
+            <span class="db-theme-dot dot-light"></span>
+            Светлая
+          </button>
+          <button class="db-theme-option" data-theme="dark">
+            <span class="db-theme-dot dot-dark"></span>
+            Тёмная
+          </button>
+          <button class="db-theme-option" data-theme="black">
+            <span class="db-theme-dot dot-black"></span>
+            Чёрная
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer for bottom nav -->
+    <div class="db-nav-spacer"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="db-nav">
+      <button class="db-nav-btn active" data-view="tasks" id="navTasks">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Задачи
+      </button>
+      <button class="db-nav-btn" data-view="history" id="navHistory">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Операции
+      </button>
+      <button class="db-nav-btn" data-view="profile" id="navProfile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        Профиль
+      </button>
+    </nav>
+  </div>
+
+  <!-- Add task sheet -->
+  <div class="db-sheet-overlay hidden" id="addOverlay">
+    <div class="db-sheet" onclick="event.stopPropagation()">
+      <div class="db-sheet-handle"></div>
+      <div class="db-sheet-head">
+        <h3>Новая задача</h3>
+        <button class="db-sheet-close" id="closeAdd" aria-label="Закрыть">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <label class="db-field-label">Название</label>
+      <input class="db-input" id="taskNameInput" placeholder="Например: Полить цветы" autocomplete="off" />
+      <label class="db-field-label">Награда, ₸</label>
+      <input class="db-input" id="taskRewardInput" placeholder="Введи свою сумму" inputmode="numeric" autocomplete="off" />
+      <button class="db-submit" id="submitAdd" disabled>Добавить задачу</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="db-toast" id="toast"></div>
+
+  <!-- Confetti container -->
+  <div class="db-confetti-container" id="confettiContainer"></div>
+</div>
+
+<script>
+  (function () {
+    // Default tasks
+    const DEFAULT_TASKS = [
+      { id: "t1", name: "Помыть посуду", reward: 300 },
+      { id: "t2", name: "Убрать в комнате", reward: 500 },
+      { id: "t3", name: "Вынести мусор", reward: 150 },
+      { id: "t4", name: "Погладить бельё", reward: 400 },
+    ];
+
+    // State
+    let state = {
+      balance: 0,
+      tasks: [...DEFAULT_TASKS],
+      history: [],
+      theme: "light", // light | dark | black
+    };
+    let currentView = "tasks";
+    let toastTimer = null;
+
+    // Helpers
+    const $ = (id) => document.getElementById(id);
+
+    function fmt(n) {
+      return new Intl.NumberFormat("ru-RU").format(Math.round(n));
+    }
+
+    function fmtTime(ts) {
+      const d = new Date(ts);
+      const now = new Date();
+      const isToday = d.toDateString() === now.toDateString();
+      const timeStr = d.toLocaleString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+      if (isToday) return `Сегодня, ${timeStr}`;
+      const dateStr = d.toLocaleString("ru-RU", { day: "2-digit", month: "2-digit" });
+      return `${dateStr}, ${timeStr}`;
+    }
+
+    // Persistence
+    const STORAGE_KEY = "dombank_state_v3";
+    const storage = {
+      get() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? { value: raw } : null;
+        } catch { return null; }
+      },
+      set(value) {
+        try {
+          localStorage.setItem(STORAGE_KEY, value);
+          return true;
+        } catch { return false; }
+      },
+    };
+
+    async function load() {
+      try {
+        const res = storage.get();
+        if (res && res.value) {
+          const parsed = JSON.parse(res.value);
+          state = {
+            balance: parsed.balance ?? 0,
+            tasks: Array.isArray(parsed.tasks) && parsed.tasks.length ? parsed.tasks : [...DEFAULT_TASKS],
+            history: parsed.history ?? [],
+            theme: parsed.theme || "light",
+          };
+        }
+      } catch { /* use defaults */ }
+      applyTheme(state.theme);
+      render();
+    }
+
+    async function save() {
+      try {
+        const success = storage.set(JSON.stringify(state));
+        $("errorNote").classList.toggle("show", !success);
+      } catch {
+        $("errorNote").classList.add("show");
+      }
+    }
+
+    function applyTheme(theme) {
+      // Remove old theme classes
+      document.body.classList.remove("theme-light", "theme-dark", "theme-black", "light", "dark", "black");
+      // Add new
+      document.body.classList.add("theme-" + theme);
+      if (theme === "dark") document.body.classList.add("dark");
+      if (theme === "black") document.body.classList.add("black");
+
+      // Update theme selector
+      document.querySelectorAll(".db-theme-option").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.theme === theme);
+      });
+
+      // Update theme indicator on the toggle button
+      const indicator = document.querySelector(".db-theme-indicator");
+      if (indicator) {
+        indicator.className = "db-theme-indicator";
+        if (theme === "dark") indicator.style.background = "#636366";
+        else if (theme === "black") indicator.style.background = "#000000";
+        else indicator.style.background = "#FFD60A";
+      }
+    }
+
+    function cycleTheme() {
+      const themes = ["light", "dark", "black"];
+      const currentIdx = themes.indexOf(state.theme);
+      const next = themes[(currentIdx + 1) % themes.length];
+      state.theme = next;
+      applyTheme(next);
+      save();
+      showToast(getThemeName(next) + " тема");
+    }
+
+    function getThemeName(t) {
+      if (t === "dark") return "🌙 Тёмная";
+      if (t === "black") return "🖤 Чёрная";
+      return "☀️ Светлая";
+    }
+
+    function showToast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    function spawnConfetti() {
+      const container = $("confettiContainer");
+      const colors = ["#EF3124", "#FF9500", "#FFCC00", "#5CD26A", "#007AFF", "#AF52DE"];
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < 40; i++) {
+        const piece = document.createElement("div");
+        piece.className = "db-confetti-piece";
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.top = -(Math.random() * 20 + 10) + "%";
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + "px";
+        piece.style.height = (Math.random() * 8 + 6) + "px";
+        piece.style.animationDuration = (Math.random() * 1 + 1) + "s";
+        piece.style.animationDelay = Math.random() * 0.4 + "s";
+        fragment.appendChild(piece);
+      }
+      container.appendChild(fragment);
+      setTimeout(() => { container.innerHTML = ""; }, 2000);
+    }
+
+    function completeTask(taskId) {
+      const task = state.tasks.find((t) => t.id === taskId);
+      if (!task) return;
+      state.balance += task.reward;
+      state.history.unshift({
+        id: "h-" + Date.now(),
+        name: task.name,
+        amount: task.reward,
+        ts: Date.now(),
+      });
+      spawnConfetti();
+      showToast("✅ +" + fmt(task.reward) + " ₸ — " + task.name);
+      save();
+      render();
+    }
+
+    function deleteTask(taskId) {
+      state.tasks = state.tasks.filter((t) => t.id !== taskId);
+      showToast("🗑️ Задача удалена");
+      save();
+      render();
+    }
+
+    function addTask() {
+      const name = $("taskNameInput").value.trim();
+      const reward = parseInt($("taskRewardInput").value, 10);
+      if (!name || !reward || reward <= 0 || reward > 999999) return;
+      state.tasks.push({ id: "t-" + Date.now(), name, reward });
+      $("taskNameInput").value = "";
+      $("taskRewardInput").value = "";
+      $("submitAdd").disabled = true;
+      $("addOverlay").classList.add("hidden");
+      showToast("📋 Задача добавлена!");
+      save();
+      render();
+    }
+
+    function todayTotal() {
+      const today = new Date().toDateString();
+      return state.history
+        .filter((h) => new Date(h.ts).toDateString() === today)
+        .reduce((s, h) => s + h.amount, 0);
+    }
+
+    function totalEarned() {
+      return state.history.reduce((s, h) => s + h.amount, 0);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function switchView(view) {
+      currentView = view;
+      $("tasksView").classList.toggle("hidden", view !== "tasks");
+      $("historyView").classList.toggle("hidden", view !== "history");
+      $("profileView").classList.toggle("hidden", view !== "profile");
+
+      // Update nav buttons
+      document.querySelectorAll(".db-nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.view === view);
+      });
+
+      render();
+    }
+
+    function render() {
+      // Balance
+      $("balanceValue").textContent = fmt(state.balance);
+      $("todayValue").textContent = fmt(todayTotal());
+
+      // Task list
+      if (currentView === "tasks") {
+        const taskList = $("taskList");
+        taskList.innerHTML = "";
+        if (!state.tasks.length) {
+          taskList.innerHTML =
+            '<div class="db-empty"><span class="db-empty-icon">📝</span>Пока нет задач.<br>Добавь первую — и начни зарабатывать!</div>';
+        } else {
+          state.tasks.forEach((task) => {
+            const el = document.createElement("div");
+            el.className = "db-task";
+            el.innerHTML = `
+              <button class="db-check-btn" aria-label="Выполнить: ${escapeHtml(task.name)}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </button>
+              <div class="db-task-info">
+                <p class="db-task-name">${escapeHtml(task.name)}</p>
+                <p class="db-task-reward">+${fmt(task.reward)} ₸</p>
+              </div>
+              <button class="db-del-btn" aria-label="Удалить задачу">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            `;
+            el.querySelector(".db-check-btn").addEventListener("click", (e) => {
+              e.stopPropagation();
+              completeTask(task.id);
+            });
+            el.querySelector(".db-del-btn").addEventListener("click", (e) => {
+              e.stopPropagation();
+              deleteTask(task.id);
+            });
+            taskList.appendChild(el);
+          });
+        }
+      }
+
+      // History list
+      if (currentView === "history") {
+        const historyList = $("historyList");
+        historyList.innerHTML = "";
+        if (!state.history.length) {
+          historyList.innerHTML =
+            '<div class="db-empty"><span class="db-empty-icon">📊</span>Здесь появятся<br>выполненные задачи.</div>';
+        } else {
+          state.history.forEach((h) => {
+            const el = document.createElement("div");
+            el.className = "db-hist-item";
+            el.innerHTML = `
+              <div class="db-hist-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+                </svg>
+              </div>
+              <div class="db-hist-info">
+                <p class="db-hist-name">${escapeHtml(h.name)}</p>
+                <div class="db-hist-time">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span>${fmtTime(h.ts)}</span>
+                </div>
+              </div>
+              <p class="db-hist-amount">+${fmt(h.amount)} ₸</p>
+            `;
+            historyList.appendChild(el);
+          });
+        }
+      }
+
+      // Profile
+      if (currentView === "profile") {
+        $("totalEarned").textContent = fmt(totalEarned()) + " ₸";
+        $("tasksDone").textContent = state.history.length;
+      }
+    }
+
+    // ========== EVENT BINDINGS ==========
+
+    // Theme toggle (cycles light → dark → black)
+    $("themeToggleBtn").addEventListener("click", cycleTheme);
+
+    // Theme selector in profile
+    document.querySelectorAll(".db-theme-option").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const theme = btn.dataset.theme;
+        state.theme = theme;
+        applyTheme(theme);
+        save();
+        showToast(getThemeName(theme) + " тема");
+      });
+    });
+
+    // Bottom nav
+    document.querySelectorAll(".db-nav-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        switchView(btn.dataset.view);
+      });
+    });
+
+    // Add task sheet
+    $("openAdd").addEventListener("click", () => $("addOverlay").classList.remove("hidden"));
+    $("closeAdd").addEventListener("click", () => $("addOverlay").classList.add("hidden"));
+    $("addOverlay").addEventListener("click", () => $("addOverlay").classList.add("hidden"));
+
+    function checkFormValid() {
+      const name = $("taskNameInput").value.trim();
+      const reward = $("taskRewardInput").value;
+      $("submitAdd").disabled = !name || !reward || parseInt(reward, 10) <= 0;
+    }
+
+    $("taskNameInput").addEventListener("input", checkFormValid);
+    $("taskRewardInput").addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 7);
+      checkFormValid();
+    });
+
+    $("submitAdd").addEventListener("click", addTask);
+
+    // Keyboard support
+    $("taskRewardInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !$("submitAdd").disabled) {
+        e.preventDefault();
+        addTask();
+      }
+    });
+    $("taskNameInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        $("taskRewardInput").focus();
+      }
+    });
+
+    // Init
+    load();
+  })();
+</script>
+</body>
+</html>
